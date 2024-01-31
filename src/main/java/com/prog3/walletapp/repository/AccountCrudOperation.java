@@ -2,46 +2,45 @@ package com.prog3.walletapp.repository;
 
 import com.prog3.walletapp.entity.Currency;
 import com.prog3.walletapp.entity.Account;
+import lombok.ToString;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@ToString
 public class AccountCrudOperation implements CrudOperation<Account> {
-
     @Override
     public List<Account> findAll() {
-      /*  String sql="select id,nom_du_compte,type_de_compte,montant_de_depart" +
-                ",devise.* from compte inner join devise on devise=id_devise;";
-        List<Account> accounts =new ArrayList<>();
+        String sql = "select id,account_name,sold,accounttype,id_currency,name,code from account " +
+                "inner join currency on id_currency=currency;";
+        List<Account> accounts = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement=ConnectionDB
-                    .getConnection().getConnectionInstance().prepareStatement(sql);
-            ResultSet resultSet=preparedStatement.executeQuery();
-            while (resultSet.next()){
+            PreparedStatement preparedStatement = ConnectionDB.getConnection()
+                    .getConnectionInstance().prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
                 accounts.add(
                         new Account(
                                 resultSet.getInt("id"),
-                                resultSet.getString("nom_du_compte"),
-                                resultSet.getString("type_de_compte"),
-                                resultSet.getDouble("montant_de_depart"),
+                                resultSet.getString("account_name"),
+                                resultSet.getDouble("sold"),
                                 new Currency(
-                                        resultSet.getInt("id_devise"),
-                                        resultSet.getString("nom_devise"),
-                                        resultSet.getString("code_iso")
-                                )
-
+                                        resultSet.getInt("id_currency"),
+                                        resultSet.getString("name"),
+                                        resultSet.getString("code")
+                                ),
+                                resultSet.getString("accounttype")
                         )
                 );
             }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
-        return null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return accounts;
     }
-
     @Override
     public Account findById(int id) {
         String sql="select id,account_name,sold,accounttype,id_currency,name,code from account " +
